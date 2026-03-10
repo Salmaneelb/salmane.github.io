@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Salmane EL Boubakkari — Sysadmin</title>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -207,6 +208,32 @@ body.light-mode .term-wrap { background: #0d0d0d !important; }
     .reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.6s ease, transform 0.6s ease; }
     .reveal.on { opacity: 1; transform: none; }
 
+
+
+    /* LOADING SCREEN */
+    #loader {
+      position: fixed; inset: 0; z-index: 9999;
+      background: #080d1a;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 24px;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+    #loader.hidden { opacity: 0; visibility: hidden; }
+    .loader-name {
+      font-family: var(--mono); font-size: 13px;
+      letter-spacing: 0.2em; color: #4d8ef0; text-transform: uppercase;
+    }
+    .loader-bar-track {
+      width: 200px; height: 2px; background: rgba(77, 142, 240, 0.15);
+    }
+    .loader-bar-fill {
+      height: 2px; width: 0%; background: #4d8ef0;
+      transition: width 0.05s linear;
+    }
+    .loader-percent {
+      font-family: var(--mono); font-size: 11px; color: rgba(77, 142, 240, 0.5);
+      letter-spacing: 0.1em;
+    }
     /* ABOUT */
     .about-grid { display: grid; grid-template-columns: 3fr 2fr; gap: 80px; align-items: start; }
     .about-text p { color: var(--muted); font-size: 15px; margin-bottom: 14px; }
@@ -306,6 +333,9 @@ div[style*="background:var(--border)"] {
 
     /* CONTACT */
     .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    <div class="reveal" style="margin-top:2px; border:1px solid var(--border); overflow:hidden;" >
+    <div id="myMap" style="height:280px; width:100%;"></div>
+    </div>
     .contact-text { font-size: 15px; color: var(--muted); line-height: 1.8; }
     .contact-links { display: flex; flex-direction: column; gap: 2px; }
     .clink {
@@ -332,8 +362,17 @@ div[style*="background:var(--border)"] {
       footer { padding: 24px; flex-direction: column; gap: 10px; text-align: center; }
     }
   </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 </head>
 <body>
+  <div id="loader">
+  <div class="loader-name">SEB_PORTFOLIO // INIT</div>
+  <div class="loader-bar-track">
+    <div class="loader-bar-fill" id="loaderBar"></div>
+  </div>
+  <div class="loader-percent" id="loaderPercent">0%</div>
+</div>
 <canvas id="particles"></canvas>
 <div class="cursor-dot" id="cursorDot"></div>
 <div class="cursor-ring" id="cursorRing"></div>
@@ -629,7 +668,29 @@ div[style*="background:var(--border)"] {
 </section>
 
 <hr class="div"/>
+<hr class="div"/>
 
+<section id="visitors">
+  <div class="container section">
+    <div class="reveal">
+      <p class="lbl">// 06 — visiteurs</p>
+      <h2 class="ttl">D'où viennent mes visiteurs ?</h2>
+    </div>
+    <div class="reveal" style="position:relative; border:1px solid var(--border); overflow:hidden; background:var(--bg2);">
+      <div id="visitorMap" style="height:420px; width:100%;"></div>
+      <div id="visitorPin" style="
+        position:absolute; bottom:20px; left:20px;
+        background:rgba(8,13,26,0.85); backdrop-filter:blur(12px);
+        border:1px solid rgba(77,142,240,0.2);
+        padding:14px 20px; font-family:var(--mono); font-size:12px;
+        color:var(--text); min-width:220px;">
+        <div style="color:#4d8ef0; font-size:10px; letter-spacing:0.15em; margin-bottom:8px;">DERNIER VISITEUR DÉTECTÉ</div>
+        <div id="visitorInfo">Chargement...</div>
+      </div>
+    </div>
+  </div>
+</section>
+  
 <!-- CONTACT -->
 <section id="contact">
   <div class="container section">
@@ -654,6 +715,15 @@ div[style*="background:var(--border)"] {
           <span class="clink-arr">↗</span>
         </a>
       </div>
+      <div class="reveal" style="margin-top:32px; display:flex; align-items:center; gap:24px;">
+      <div id="qrcode" style="
+        padding:12px; background:#ffffff;
+        border:1px solid var(--border); display:inline-block;"></div>
+      <div>
+        <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:#4d8ef0; margin-bottom:8px;">Scanner pour accéder au portfolio</p>
+        <p style="font-size:13px; color:var(--muted);">Partage facilement ton portfolio depuis ton téléphone.</p>
+      </div>
+    </div>
     </div>
   </div>
 </section>
@@ -980,6 +1050,75 @@ function drawParticles() {
 }
 drawParticles();
 
+// LOADING SCREEN
+var loaderBar = document.getElementById('loaderBar');
+var loaderPercent = document.getElementById('loaderPercent');
+var loader = document.getElementById('loader');
+var progress = 0;
+var loaderInterval = setInterval(function() {
+  progress += Math.random() * 18;
+  if (progress >= 100) {
+    progress = 100;
+    clearInterval(loaderInterval);
+    setTimeout(function() { loader.classList.add('hidden'); }, 400);
+  }
+  loaderBar.style.width = progress + '%';
+  loaderPercent.textContent = Math.floor(progress) + '%';
+}, 80);
+
+// CARTE VISITEURS
+window.addEventListener('load', async function() {
+  try {
+    var map = L.map('visitorMap', { zoomControl: false, attributionControl: false });
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      maxZoom: 18
+    }).addTo(map);
+
+    var geo = await fetch('https://ipapi.co/json/').then(r => r.json());
+    var lat = geo.latitude || 48.8566;
+    var lng = geo.longitude || 2.3522;
+
+    map.setView([lat, lng], 5);
+
+    var icon = L.divIcon({
+      html: '<div style="width:12px;height:12px;background:#4d8ef0;border-radius:50%;border:2px solid rgba(77,142,240,0.3);box-shadow:0 0 12px #4d8ef0;"></div>',
+      iconSize: [12, 12], iconAnchor: [6, 6], className: ''
+    });
+
+    L.marker([lat, lng], { icon: icon }).addTo(map);
+
+    document.getElementById('visitorInfo').innerHTML =
+      '📍 ' + (geo.city || '?') + ', ' + (geo.country_name || '?') + '<br>' +
+      '📡 ' + (geo.org || '?') + '<br>' +
+      '🌐 ' + (geo.ip || '?');
+
+  } catch(e) {
+    document.getElementById('visitorInfo').textContent = 'Localisation indisponible';
+  }
+});
+  
+// MA LOCALISATION
+window.addEventListener('load', function() {
+  var myMap = L.map('myMap', { zoomControl: false, attributionControl: false, dragging: false, scrollWheelZoom: false });
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { maxZoom: 18 }).addTo(myMap);
+  myMap.setView([48.8566, 2.3522], 11); // Change avec tes vraies coordonnées
+
+  var icon = L.divIcon({
+    html: '<div style="width:14px;height:14px;background:#4d8ef0;border-radius:50%;border:3px solid rgba(77,142,240,0.4);box-shadow:0 0 16px #4d8ef0;"></div>',
+    iconSize: [14, 14], iconAnchor: [7, 7], className: ''
+  });
+  L.marker([48.8566, 2.3522], { icon: icon }).addTo(myMap)
+    .bindPopup('<b style="font-family:monospace;color:#4d8ef0">Salmane — Paris, FR</b>').openPopup();
+});
+// QR CODE
+window.addEventListener('load', function() {
+  new QRCode(document.getElementById('qrcode'), {
+    text: 'https://TON-PSEUDO.github.io',
+    width: 100, height: 100,
+    colorDark: '#1b3f6e', colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.H
+  });
+});  
 })();
 </script>
 <button class="theme-toggle" id="themeToggle" title="Changer le thème">🌙</button>
