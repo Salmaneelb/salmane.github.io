@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Salmane El Boubakkari — Sysadmin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #ffffff;
+      --bg2:      #f7f7f5;
+      --border:   #e8e8e4;
+      --text:     #1a1a1a;
+      --muted:    #888880;
+      --green:    #2d6a4f;
+      --green-lt: #e8f5ef;
+      --serif:    'Playfair Display', serif;
+      --mono:     'IBM Plex Mono', monospace;
+      --sans:     'IBM Plex Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); font-weight: 300; line-height: 1.7; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,255,255,0.92); backdrop-filter: blur(16px);
+      border-bottom: 1px solid transparent;
+      padding: 20px 60px;
+      display: flex; justify-content: space-between; align-items: center;
+      transition: border-color 0.3s;
+    }
+    nav.scrolled { border-color: var(--border); }
+    .nav-logo { font-family: var(--mono); font-size: 13px; letter-spacing: 0.06em; color: var(--green); }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); }
+
+    /* HERO */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 0 60px;
+      max-width: 1100px; margin: 0 auto;
+      position: relative;
+    }
+    .hero-tag {
+      font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--green); margin-bottom: 28px;
+      opacity: 0; animation: up 0.7s ease 0.2s forwards;
+    }
+    .hero-name {
+      font-family: var(--serif); font-size: clamp(48px, 7vw, 88px);
+      font-weight: 400; line-height: 1.05; letter-spacing: -0.02em;
+      opacity: 0; animation: up 0.7s ease 0.35s forwards;
+    }
+    .hero-name em { font-style: italic; color: var(--green); }
+    .hero-sub {
+      margin-top: 28px; max-width: 520px; font-size: 15px; color: var(--muted);
+      opacity: 0; animation: up 0.7s ease 0.5s forwards;
+    }
+    .hero-btns {
+      margin-top: 52px; display: flex; gap: 20px; align-items: center;
+      opacity: 0; animation: up 0.7s ease 0.65s forwards;
+    }
+    .btn-dark {
+      font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 13px 30px; background: var(--text); color: #fff;
+      text-decoration: none; transition: opacity 0.2s; display: inline-block;
+    }
+    .btn-dark:hover { opacity: 0.75; }
+    .btn-line {
+      font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none; transition: color 0.2s;
+    }
+    .btn-line:hover { color: var(--text); }
+
+    @keyframes up { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+
+    /* LAYOUT */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 60px; }
+    .section { padding: 110px 0; }
+    hr.div { border: none; border-top: 1px solid var(--border); }
+
+    .lbl { font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--green); margin-bottom: 14px; }
+    .ttl { font-family: var(--serif); font-size: clamp(30px, 4vw, 48px); font-weight: 400; line-height: 1.1; margin-bottom: 52px; }
+
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.on { opacity: 1; transform: none; }
+
+    /* ABOUT */
+    .about-grid { display: grid; grid-template-columns: 3fr 2fr; gap: 80px; align-items: start; }
+    .about-text p { color: var(--muted); font-size: 15px; margin-bottom: 14px; }
+    .about-text strong { color: var(--text); font-weight: 500; }
+    .about-cards { display: flex; flex-direction: column; gap: 2px; }
+    .acard { padding: 20px 22px; background: var(--bg2); border: 1px solid var(--border); }
+    .acard-lbl { font-family: var(--mono); font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--green); margin-bottom: 6px; }
+    .acard-val { font-size: 13px; color: var(--text); }
+
+    /* STACK */
+    .stack-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)); gap: 2px; }
+    .scard {
+      padding: 24px 20px; background: var(--bg2); border: 1px solid var(--border);
+      display: flex; flex-direction: column; gap: 10px; transition: background 0.2s;
+    }
+    .scard:hover { background: var(--green-lt); }
+    .scard-icon { font-size: 20px; }
+    .scard-name { font-family: var(--mono); font-size: 12px; color: var(--text); }
+    .scard-cat { font-size: 11px; color: var(--muted); }
+
+    /* PROJECTS */
+    .proj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+    .pcard { padding: 36px; background: var(--bg2); border: 1px solid var(--border); transition: border-color 0.2s; }
+    .pcard:hover { border-color: var(--green); }
+    .pcard-num { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; color: var(--green); margin-bottom: 18px; }
+    .pcard-title { font-family: var(--serif); font-size: 20px; margin-bottom: 10px; }
+    .pcard-desc { font-size: 13px; color: var(--muted); line-height: 1.7; margin-bottom: 22px; }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 10px; border: 1px solid var(--border); color: var(--muted); background: var(--bg); }
+
+    /* TERMINAL */
+    .term-wrap { border: 1px solid #222; background: #0d0d0d; overflow: hidden; }
+    .t-bar { background: #1c1c1c; border-bottom: 1px solid #2a2a2a; padding: 12px 18px; display: flex; align-items: center; gap: 7px; }
+    .dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+    .dot.r { background: #ff5f57; }
+    .dot.y { background: #ffbd2e; }
+    .dot.g { background: #28ca41; }
+    .t-title { font-family: var(--mono); font-size: 11px; color: #555; margin-left: 8px; letter-spacing: 0.08em; }
+    .t-body {
+      padding: 24px 28px; font-family: var(--mono); font-size: 13px;
+      min-height: 380px; max-height: 480px; overflow-y: auto; line-height: 1.9;
+    }
+    .t-body::-webkit-scrollbar { width: 3px; }
+    .t-body::-webkit-scrollbar-thumb { background: #333; }
+    .tline { display: flex; flex-wrap: wrap; margin-bottom: 1px; }
+    .tprompt { color: #2d9e6b; white-space: nowrap; margin-right: 10px; flex-shrink: 0; }
+    .cw { color: #e8e8e8; }
+    .cm { color: #666; }
+    .cg { color: #2d9e6b; }
+    .ce { color: #ff6b6b; }
+    .t-input-row { display: flex; align-items: center; margin-top: 4px; }
+    #cmd {
+      flex: 1; background: transparent; border: none; outline: none;
+      font-family: var(--mono); font-size: 13px; color: #e8e8e8;
+      caret-color: #2d9e6b; min-width: 0;
+    }
+    .thinking { color: #2d9e6b; opacity: 0.6; }
+    .t-note { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-top: 14px; letter-spacing: 0.08em; }
+
+    /* CONTACT */
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    .contact-text { font-size: 15px; color: var(--muted); line-height: 1.8; }
+    .contact-links { display: flex; flex-direction: column; gap: 2px; }
+    .clink {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 18px 22px; background: var(--bg2); border: 1px solid var(--border);
+      text-decoration: none; transition: border-color 0.2s, background 0.2s;
+    }
+    .clink:hover { border-color: var(--green); background: var(--green-lt); }
+    .clink-lbl { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--green); }
+    .clink-val { font-size: 13px; color: var(--text); }
+    .clink-arr { color: var(--muted); }
+
+    /* FOOTER */
+    footer { border-top: 1px solid var(--border); padding: 28px 60px; display: flex; justify-content: space-between; align-items: center; }
+    .f-copy { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 0.1em; }
+    .f-tag  { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.08em; }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 18px 24px; }
+      .nav-links { display: none; }
+      #hero, .container { padding-left: 24px; padding-right: 24px; }
+      .about-grid, .proj-grid, .contact-grid { grid-template-columns: 1fr; gap: 32px; }
+      footer { padding: 24px; flex-direction: column; gap: 10px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-logo">SEB /</div>
+  <ul class="nav-links">
+    <li><a href="#about">À propos</a></li>
+    <li><a href="#stack">Stack</a></li>
+    <li><a href="#projects">Projets</a></li>
+    <li><a href="#terminal">Terminal</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section style="position:relative; overflow:hidden;">
+  <div id="hero">
+    <p class="hero-tag">// Administrateur Systèmes &amp; Réseaux · Alternance</p>
+    <h1 class="hero-name">Salmane<br/><em>El Boubakkari</em></h1>
+    <p class="hero-sub">Licence SRD · Passionné par la conception et la sécurisation d'infrastructures IT performantes.</p>
+    <div class="hero-btns">
+      <a href="#projects" class="btn-dark">Voir mes projets</a>
+      <a href="#terminal" class="btn-line">↓ Ouvrir le terminal</a>
+    </div>
+  </div>
+</section>
+
+<hr class="div"/>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container section">
+    <div class="reveal">
+      <p class="lbl">// 01 — à propos</p>
+      <h2 class="ttl">Qui suis-je ?</h2>
+    </div>
+    <div class="about-grid reveal">
+      <div class="about-text">
+        <p>Administrateur Systèmes et Réseaux en <strong>alternance</strong>, actuellement étudiant en <strong>Licence SRD</strong> (Systèmes, Réseaux et Données) après un BTS SIO option SISR.</p>
+        <p>Je me spécialise dans l'administration d'infrastructures IT avec des compétences en <strong>Active Directory</strong>, virtualisation (<strong>Proxmox</strong>, VirtualBox) et gestion des réseaux.</p>
+        <p>Passionné par les technologies systèmes, réseaux et cloud, je m'intéresse particulièrement à la <strong>conception et à la sécurisation d'infrastructures performantes</strong>.</p>
+      </div>
+      <div class="about-cards">
+        <div class="acard">
+          <div class="acard-lbl">Rôle</div>
+          <div class="acard-val">Administrateur Systèmes &amp; Réseaux (alternance)</div>
+        </div>
+        <div class="acard">
+          <div class="acard-lbl">Formation</div>
+          <div class="acard-val">Licence SRD · BTS SIO SISR</div>
+        </div>
+        <div class="acard">
+          <div class="acard-lbl">Spécialités</div>
+          <div class="acard-val">Active Directory · Virtualisation · Cloud · Sécurité</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="div"/>
+
+<!-- STACK -->
+<section id="stack">
+  <div class="container section">
+    <div class="reveal">
+      <p class="lbl">// 02 — compétences</p>
+      <h2 class="ttl">Ma stack</h2>
+    </div>
+    <div class="stack-grid reveal">
+      <div class="scard"><div class="scard-icon">🪟</div><div class="scard-name">Active Directory</div><div class="scard-cat">Annuaire</div></div>
+      <div class="scard"><div class="scard-icon">☁️</div><div class="scard-name">Azure AD</div><div class="scard-cat">Cloud IAM</div></div>
+      <div class="scard"><div class="scard-icon">📱</div><div class="scard-name">Intune</div><div class="scard-cat">MDM / Endpoint</div></div>
+      <div class="scard"><div class="scard-icon">🛡️</div><div class="scard-name">Wazuh</div><div class="scard-cat">SIEM / Sécurité</div></div>
+      <div class="scard"><div class="scard-icon">🖥️</div><div class="scard-name">Proxmox</div><div class="scard-cat">Virtualisation</div></div>
+      <div class="scard"><div class="scard-icon">📦</div><div class="scard-name">VirtualBox</div><div class="scard-cat">Virtualisation</div></div>
+      <div class="scard"><div class="scard-icon">🎫</div><div class="scard-name">GLPI</div><div class="scard-cat">ITSM / Ticketing</div></div>
+      <div class="scard"><div class="scard-icon">🐍</div><div class="scard-name">Python</div><div class="scard-cat">Scripting</div></div>
+      <div class="scard"><div class="scard-icon">🔷</div><div class="scard-name">Microsoft 365</div><div class="scard-cat">Écosystème</div></div>
+      <div class="scard"><div class="scard-icon">🌐</div><div class="scard-name">HTML / CSS</div><div class="scard-cat">Web</div></div>
+      <div class="scard"><div class="scard-icon">🐧</div><div class="scard-name">Linux</div><div class="scard-cat">Système</div></div>
+      <div class="scard"><div class="scard-icon">🪟</div><div class="scard-name">Windows Server</div><div class="scard-cat">Système</div></div>
+      <div class="scard"><div class="scard-icon">🔒</div><div class="scard-name">Pare-feu / VPN</div><div class="scard-cat">Réseau</div></div>
+      <div class="scard"><div class="scard-icon">🌿</div><div class="scard-name">Git</div><div class="scard-cat">Versioning</div></div>
+    </div>
+  </div>
+</section>
+
+<hr class="div"/>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="container section">
+    <div class="reveal">
+      <p class="lbl">// 03 — projets</p>
+      <h2 class="ttl">Réalisations</h2>
+    </div>
+    <div class="proj-grid reveal">
+      <div class="pcard">
+        <div class="pcard-num">01</div>
+        <h3 class="pcard-title">Déploiement Azure AD</h3>
+        <p class="pcard-desc">Mise en place d'un environnement Azure Active Directory avec gestion des identités, groupes et politiques d'accès conditionnel.</p>
+        <div class="tags"><span class="tag">Azure AD</span><span class="tag">IAM</span><span class="tag">SSO</span></div>
+      </div>
+      <div class="pcard">
+        <div class="pcard-num">02</div>
+        <h3 class="pcard-title">Gestion de parc Intune</h3>
+        <p class="pcard-desc">Administration d'un parc de postes via Microsoft Intune : profils, déploiement d'apps, conformité et gestion des appareils mobiles.</p>
+        <div class="tags"><span class="tag">Intune</span><span class="tag">MDM</span><span class="tag">Windows</span></div>
+      </div>
+      <div class="pcard">
+        <div class="pcard-num">03</div>
+        <h3 class="pcard-title">Infrastructure Proxmox</h3>
+        <p class="pcard-desc">Déploiement et administration d'un environnement de virtualisation Proxmox avec VMs, conteneurs LXC et réplication.</p>
+        <div class="tags"><span class="tag">Proxmox</span><span class="tag">VMs</span><span class="tag">LXC</span></div>
+      </div>
+      <div class="pcard">
+        <div class="pcard-num">04</div>
+        <h3 class="pcard-title">Monitoring Wazuh</h3>
+        <p class="pcard-desc">Déploiement d'un SIEM Wazuh pour la surveillance des événements de sécurité, détection d'intrusions et corrélation de logs.</p>
+        <div class="tags"><span class="tag">Wazuh</span><span class="tag">SIEM</span><span class="tag">Sécurité</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="div"/>
+
+<!-- TERMINAL -->
+<section id="terminal">
+  <div class="container section">
+    <div class="reveal">
+      <p class="lbl">// 04 — terminal IA</p>
+      <h2 class="ttl">Interagis avec mon portfolio</h2>
+    </div>
+    <div class="term-wrap reveal">
+      <div class="t-bar">
+        <div class="dot r"></div>
+        <div class="dot y"></div>
+        <div class="dot g"></div>
+        <span class="t-title">salmane@portfolio ~ </span>
+      </div>
+      <div class="t-body" id="tbody">
+        <div class="tline"><span class="cg">Bienvenue sur le terminal de Salmane El Boubakkari.</span></div>
+        <div class="tline"><span class="cm">Tape <span class="cg">help</span> pour les commandes, ou pose une question directement.</span></div>
+        <div style="height:10px"></div>
+        <div class="t-input-row" id="inputRow">
+          <span class="tprompt">salmane@portfolio ~ $&nbsp;</span>
+          <input id="cmd" type="text" autocomplete="off" spellcheck="false" aria-label="Terminal"/>
+        </div>
+      </div>
+    </div>
+    <p class="t-note">↑ Terminal alimenté par IA — commandes intégrées</p>
+  </div>
+</section>
+
+<hr class="div"/>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container section">
+    <div class="reveal">
+      <p class="lbl">// 05 — contact</p>
+      <h2 class="ttl">Travaillons ensemble</h2>
+    </div>
+    <div class="contact-grid reveal">
+      <div class="contact-text">
+        <p>Disponible pour des missions, alternances ou opportunités en administration système et réseau.</p>
+        <p style="margin-top:14px;">N'hésitez pas à me contacter via LinkedIn ou par email.</p>
+      </div>
+      <div class="contact-links">
+        <a href="https://www.linkedin.com/in/salmane-el-boubakkari-a5ab3027a" target="_blank" rel="noopener" class="clink">
+          <span class="clink-lbl">LinkedIn</span>
+          <span class="clink-val">Salmane El Boubakkari</span>
+          <span class="clink-arr">↗</span>
+        </a>
+        <a href="mailto:salmane.elboubakkari.seb@gmail.com" class="clink">
+          <span class="clink-lbl">Email</span>
+          <span class="clink-val">salmane.elboubakkari.seb@gmail.com</span>
+          <span class="clink-arr">↗</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="f-copy">© 2025 Salmane El Boubakkari</span>
+  <span class="f-tag">SysAdmin · Azure · Virtualisation · Sécurité</span>
+</footer>
+
+<script>
+(function() {
+  // NAV
+  window.addEventListener('scroll', function() {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 30);
+  });
+
+  // REVEAL
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('on'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(function(el) { obs.observe(el); });
+
+  // TERMINAL
+  var tbody  = document.getElementById('tbody');
+  var inputRow = document.getElementById('inputRow');
+  var cmd = document.getElementById('cmd');
+
+  var CMDS = {
+    'help': [
+      { c:'cg', v:'Commandes disponibles :' },
+      { c:'cw', v:'  whoami       — qui est Salmane ?' },
+      { c:'cw', v:'  ls projects  — liste des projets' },
+      { c:'cw', v:'  ls stack     — compétences techniques' },
+      { c:'cw', v:'  contact      — coordonnées' },
+      { c:'cw', v:'  clear        — effacer le terminal' },
+      { c:'cm', v:'  <question>   — pose-moi n\'importe quoi !' }
+    ],
+    'whoami': [
+      { c:'cw', v:'Salmane El Boubakkari' },
+      { c:'cm', v:'Administrateur Systèmes & Réseaux en alternance' },
+      { c:'cm', v:'Licence SRD · BTS SIO SISR' },
+      { c:'cm', v:'Spécialiste : Active Directory, Azure, Proxmox, Wazuh' }
+    ],
+    'ls projects': [
+      { c:'cg', v:'drwxr-xr-x  Déploiement Azure AD' },
+      { c:'cg', v:'drwxr-xr-x  Gestion de parc Intune' },
+      { c:'cg', v:'drwxr-xr-x  Infrastructure Proxmox' },
+      { c:'cg', v:'drwxr-xr-x  Monitoring Wazuh' }
+    ],
+    'ls stack': [
+      { c:'cw', v:'Active Directory  Azure AD  Intune  Wazuh' },
+      { c:'cw', v:'Proxmox  VirtualBox  GLPI  Python  HTML/CSS' }
+    ],
+    'contact': [
+      { c:'cg', v:'LinkedIn : linkedin.com/in/salmane-el-boubakkari-a5ab3027a' },
+      { c:'cm', v:'Email    : salmane.elboubakkari.seb@gmail.com' }
+    ]
+  };
+
+  function addLine(cls, text) {
+    var div = document.createElement('div');
+    div.className = 'tline';
+    var span = document.createElement('span');
+    span.className = cls;
+    span.textContent = text;
+    div.appendChild(span);
+    tbody.insertBefore(div, inputRow);
+    tbody.scrollTop = tbody.scrollHeight;
+  }
+
+  function addEcho(text) {
+    var div = document.createElement('div');
+    div.className = 'tline';
+    div.innerHTML = '<span class="tprompt">salmane@portfolio ~ $&nbsp;</span><span class="cw">' +
+      text.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</span>';
+    tbody.insertBefore(div, inputRow);
+  }
+
+  function spacer() {
+    var d = document.createElement('div');
+    d.style.height = '6px';
+    tbody.insertBefore(d, inputRow);
+  }
+
+  async function askAI(question) {
+    var thinking = document.createElement('div');
+    thinking.className = 'tline';
+    thinking.innerHTML = '<span class="thinking">⟳ Réflexion en cours...</span>';
+    tbody.insertBefore(thinking, inputRow);
+    tbody.scrollTop = tbody.scrollHeight;
+
+    try {
+      var res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          system: [
+            "Tu es l'assistant terminal du portfolio de Salmane El Boubakkari.",
+            "Réponds en 2-4 lignes max, en français, ton professionnel, texte brut sans markdown.",
+            "Infos : Administrateur Systèmes & Réseaux en alternance, Licence SRD, BTS SIO SISR.",
+            "Compétences : Active Directory, Azure AD, Intune, Wazuh, Proxmox, VirtualBox, GLPI, Python, HTML/CSS, Microsoft 365.",
+            "LinkedIn : linkedin.com/in/salmane-el-boubakkari-a5ab3027a",
+            "Email : salmane.elboubakkari.seb@gmail.com"
+          ].join(' '),
+          messages: [{ role: 'user', content: question }]
+        })
+      });
+      var data = await res.json();
+      thinking.remove();
+      var reply = '';
+      if (data.content && data.content.length) {
+        data.content.forEach(function(b) { if (b.type === 'text') reply += b.text; });
+      }
+      if (!reply) reply = 'Aucune réponse.';
+      reply.split('\n').forEach(function(l) {
+        if (l.trim()) addLine('cm', l.trim());
+      });
+    } catch (err) {
+      thinking.remove();
+      addLine('ce', 'Erreur de connexion à l\'IA.');
+    }
+    tbody.scrollTop = tbody.scrollHeight;
+  }
+
+  cmd.addEventListener('keydown', function(e) {
+    if (e.key !== 'Enter') return;
+    var raw = cmd.value.trim();
+    var lower = raw.toLowerCase();
+    cmd.value = '';
+    if (!raw) return;
+
+    addEcho(raw);
+
+    if (lower === 'clear') {
+      var children = Array.from(tbody.children);
+      children.forEach(function(child) {
+        if (child !== inputRow) child.remove();
+      });
+      addLine('cg', 'Terminal effacé. Tape help pour recommencer.');
+      spacer();
+      tbody.scrollTop = tbody.scrollHeight;
+      return;
+    }
+
+    if (CMDS[lower]) {
+      CMDS[lower].forEach(function(l) { addLine(l.c, l.v); });
+      spacer();
+      tbody.scrollTop = tbody.scrollHeight;
+    } else {
+      askAI(raw).then(function() { spacer(); });
+    }
+  });
+
+  document.getElementById('terminal').addEventListener('click', function() { cmd.focus(); });
+  cmd.focus();
+})();
+</script>
+</body>
+</html>
