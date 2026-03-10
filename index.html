@@ -3,32 +3,69 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Salmane El Boubakkari — Sysadmin</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <title>Salmane EL Boubakkari — Sysadmin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:       #ffffff;
-      --bg2:      #f7f7f5;
-      --border:   #e8e8e4;
-      --text:     #1a1a1a;
-      --muted:    #888880;
-      --green:    #2d6a4f;
-      --green-lt: #e8f5ef;
-      --serif:    'Playfair Display', serif;
-      --mono:     'IBM Plex Mono', monospace;
-      --sans:     'IBM Plex Sans', sans-serif;
+      --bg:       #080d1a;
+      --bg2:      #0e1628;
+      --border:   rgba(99, 155, 255, 0.15);
+      --text:     #e8edf5;
+      --muted:    #6b82a8;
+      --green:    #4d8ef0;
+      --green-lt: rgba(77, 142, 240, 0.1);
+      --serif:    'Outfit', sans-serif;
+      --mono:     'JetBrains Mono', monospace;
+      --sans:     'Outfit', sans-serif;
     }
 
+/* FOND DYNAMIQUE */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse 60% 50% at 20% 20%, rgba(77, 142, 240, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 80%, rgba(99, 60, 220, 0.1) 0%, transparent 60%),
+    #080d1a;
+}
+
+@keyframes bgMove {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
     html { scroll-behavior: smooth; }
-    body { background: var(--bg); color: var(--text); font-family: var(--sans); font-weight: 300; line-height: 1.7; }
+    body { background: transparent; color: var(--text); font-family: var(--sans); font-weight: 300; line-height: 1.7; }
+    
+    /* Textes globaux */
+    body { color: #e8edf5; }
+
+    .ttl, .hero-name, .pcard-title, .acard-val { color: #e8edf5 !important; }
+    .lbl, .hero-tag, .pcard-num, .acard-lbl, .nav-logo { color: #4d8ef0 !important; }
+    .nav-links a { color: #6b82a8 !important; }
+    .nav-links a:hover { color: #e8edf5 !important; }
+    .scard-name { color: #e8edf5 !important; }
+    .f-copy { color: #6b82a8 !important; }
+    .f-tag { color: #4d8ef0 !important; }
+    .btn-dark { background: #4d8ef0 !important; color: #080d1a !important; }
+    .btn-line { color: #6b82a8 !important; }
+    .btn-line:hover { color: #e8edf5 !important; }
+    .clink-lbl { color: #4d8ef0 !important; }
+    .clink-val { color: #e8edf5 !important; }
 
     /* NAV */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      background: rgba(255,255,255,0.92); backdrop-filter: blur(16px);
-      border-bottom: 1px solid transparent;
+      background: rgba(8, 13, 26, 0.75);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(77, 142, 240, 0.15);
+      box-shadow: 0 1px 32px rgba(0, 0, 0, 0.4);
       padding: 20px 60px;
       display: flex; justify-content: space-between; align-items: center;
       transition: border-color 0.3s;
@@ -110,6 +147,44 @@
     .scard-icon { font-size: 20px; }
     .scard-name { font-family: var(--mono); font-size: 12px; color: var(--text); }
     .scard-cat { font-size: 11px; color: var(--muted); }
+    /* Cards dark glass */
+.scard, .pcard, .acard, .clink {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(77, 142, 240, 0.15) !important;
+  backdrop-filter: blur(8px);
+}
+.scard:hover, .pcard:hover, .clink:hover {
+  background: rgba(77, 142, 240, 0.08) !important;
+  border-color: rgba(77, 142, 240, 0.4) !important;
+}
+
+/* Texte adapté au dark */
+.about-text p, .contact-text, .pcard-desc, .scard-cat, .t-note {
+  color: #6b82a8 !important;
+}
+
+/* Barres de compétences */
+[data-width] {
+  background: linear-gradient(90deg, #4d8ef0, #7b5cf0) !important;
+}
+
+/* Tags */
+.tag {
+  background: rgba(77, 142, 240, 0.08) !important;
+  border-color: rgba(77, 142, 240, 0.2) !important;
+  color: #4d8ef0 !important;
+}
+
+/* Hero name */
+.hero-name em { color: #4d8ef0; }
+
+/* Dividers */
+hr.div { border-color: rgba(77, 142, 240, 0.1) !important; }
+
+/* Skill bar track */
+div[style*="background:var(--border)"] {
+  background: rgba(77, 142, 240, 0.1) !important;
+}
 
     /* PROJECTS */
     .proj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
@@ -122,8 +197,8 @@
     .tag { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 10px; border: 1px solid var(--border); color: var(--muted); background: var(--bg); }
 
     /* TERMINAL */
-    .term-wrap { border: 1px solid #222; background: #0d0d0d; overflow: hidden; }
-    .t-bar { background: #1c1c1c; border-bottom: 1px solid #2a2a2a; padding: 12px 18px; display: flex; align-items: center; gap: 7px; }
+    .term-wrap { border-color: rgba(77, 142, 240, 0.2) !important; background: #050a14 !important; }
+    .t-bar { background: #080d1a !important; border-color: rgba(77, 142, 240, 0.1) !important; }
     .dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
     .dot.r { background: #ff5f57; }
     .dot.y { background: #ffbd2e; }
@@ -203,6 +278,9 @@
       <a href="#projects" class="btn-dark">Voir mes projets</a>
       <a href="#terminal" class="btn-line">↓ Ouvrir le terminal</a>
     </div>
+    <div style="margin-top:20px; opacity:0; animation: up 0.7s ease 0.8s forwards;">
+    <a href="assets/CV Salmane.pdf" download class="btn-line">↓ Télécharger mon CV</a>
+    </div>
   </div>
 </section>
 
@@ -269,11 +347,86 @@
 
 <hr class="div"/>
 
+<section id="competences">
+  <div class="container section">
+    <div class="reveal">
+      <p class="lbl">// 03 — niveau</p>
+      <h2 class="ttl">Niveau de maîtrise</h2>
+    </div>
+    <div class="reveal" style="display:flex; flex-direction:column; gap:20px; max-width:700px;">
+
+      <div class="skill-bar-item">
+        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+          <span style="font-family:var(--mono); font-size:12px; color:var(--text);">Active Directory / Windows Server</span>
+          <span style="font-family:var(--mono); font-size:12px; color:var(--green);">85%</span>
+        </div>
+        <div style="background:var(--border); height:3px; width:100%;">
+          <div style="background:var(--green); height:3px; width:0%; transition:width 1.2s ease;" data-width="85%"></div>
+        </div>
+      </div>
+
+      <div class="skill-bar-item">
+        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+          <span style="font-family:var(--mono); font-size:12px; color:var(--text);">Azure AD / Intune / Microsoft 365</span>
+          <span style="font-family:var(--mono); font-size:12px; color:var(--green);">80%</span>
+        </div>
+        <div style="background:var(--border); height:3px; width:100%;">
+          <div style="background:var(--green); height:3px; width:0%; transition:width 1.2s ease;" data-width="80%"></div>
+        </div>
+      </div>
+
+      <div class="skill-bar-item">
+        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+          <span style="font-family:var(--mono); font-size:12px; color:var(--text);">Virtualisation (Proxmox / VirtualBox)</span>
+          <span style="font-family:var(--mono); font-size:12px; color:var(--green);">80%</span>
+        </div>
+        <div style="background:var(--border); height:3px; width:100%;">
+          <div style="background:var(--green); height:3px; width:0%; transition:width 1.2s ease;" data-width="80%"></div>
+        </div>
+      </div>
+
+      <div class="skill-bar-item">
+        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+          <span style="font-family:var(--mono); font-size:12px; color:var(--text);">Réseaux / Pare-feu / VPN</span>
+          <span style="font-family:var(--mono); font-size:12px; color:var(--green);">75%</span>
+        </div>
+        <div style="background:var(--border); height:3px; width:100%;">
+          <div style="background:var(--green); height:3px; width:0%; transition:width 1.2s ease;" data-width="75%"></div>
+        </div>
+      </div>
+
+      <div class="skill-bar-item">
+        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+          <span style="font-family:var(--mono); font-size:12px; color:var(--text);">Sécurité / Wazuh / SIEM</span>
+          <span style="font-family:var(--mono); font-size:12px; color:var(--green);">70%</span>
+        </div>
+        <div style="background:var(--border); height:3px; width:100%;">
+          <div style="background:var(--green); height:3px; width:0%; transition:width 1.2s ease;" data-width="70%"></div>
+        </div>
+      </div>
+
+      <div class="skill-bar-item">
+        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+          <span style="font-family:var(--mono); font-size:12px; color:var(--text);">Python / Scripting</span>
+          <span style="font-family:var(--mono); font-size:12px; color:var(--green);">60%</span>
+        </div>
+        <div style="background:var(--border); height:3px; width:100%;">
+          <div style="background:var(--green); height:3px; width:0%; transition:width 1.2s ease;" data-width="60%"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<hr class="div"/>
+
 <!-- PROJECTS -->
 <section id="projects">
   <div class="container section">
     <div class="reveal">
-      <p class="lbl">// 03 — projets</p>
+      <p class="lbl">// 04 — projets</p>
       <h2 class="ttl">Réalisations</h2>
     </div>
     <div class="proj-grid reveal">
@@ -305,13 +458,68 @@
   </div>
 </section>
 
+
+<hr class="div"/>
+
+<section id="formation">
+  <div class="container section">
+    <div class="reveal">
+      <p class="lbl">// 05 — formation</p>
+      <h2 class="ttl">Parcours académique</h2>
+    </div>
+    <div class="reveal" style="display:flex; flex-direction:column; gap:2px;">
+
+      <div style="padding:32px 36px; background:var(--bg2); border:1px solid var(--border);">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+          <div>
+            <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--green); margin-bottom:8px;">En cours</p>
+            <h3 style="font-family:var(--serif); font-size:22px; font-weight:400;">Licence SRD — Systèmes, Réseaux et Données</h3>
+          </div>
+          <span style="font-family:var(--mono); font-size:11px; color:var(--muted); white-space:nowrap;">2025 — 2026</span>
+        </div>
+        <p style="font-size:14px; color:var(--muted);">Formation axée sur l'administration systèmes, les réseaux avancés, la cybersécurité et la gestion des données. Poursuite d'études après le BTS SIO SISR en alternance.</p>
+      </div>
+
+      <div style="padding:32px 36px; background:var(--bg2); border:1px solid var(--border);">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+          <div>
+            <p style="font-family:var(--mono); font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--green); margin-bottom:8px;">Obtenu</p>
+            <h3 style="font-family:var(--serif); font-size:22px; font-weight:400;">BTS SIO — Option SISR</h3>
+          </div>
+          <span style="font-family:var(--mono); font-size:11px; color:var(--muted); white-space:nowrap;">2023 — 2025</span>
+        </div>
+        <p style="font-size:14px; color:var(--muted);">Solutions d'infrastructure, systèmes et réseaux. Administration Windows Server, Active Directory, virtualisation, réseaux et sécurité.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<hr class="div"/>
+
+<section id="certifications">
+  <div class="container section">
+    <div class="reveal">
+      <p class="lbl">// 06 — certifications</p>
+      <h2 class="ttl">Validations & certifications</h2>
+    </div>
+    <div class="stack-grid reveal">
+      <div class="scard"><div class="scard-icon">✅</div><div class="scard-name">PIX</div><div class="scard-cat">Certifié</div></div>
+      <div class="scard"><div class="scard-icon">✅</div><div class="scard-name">RGPD</div><div class="scard-cat">Attestation</div></div>
+      <div class="scard"><div class="scard-icon">⏳</div><div class="scard-name">CCNA</div><div class="scard-cat">En cours</div></div>
+      <div class="scard"><div class="scard-icon">🌐</div><div class="scard-name">Cisco Netacad</div><div class="scard-cat">IT Essentials</div></div>
+    </div>
+  </div>
+</section>
+
+
 <hr class="div"/>
 
 <!-- TERMINAL -->
 <section id="terminal">
   <div class="container section">
     <div class="reveal">
-      <p class="lbl">// 04 — terminal IA</p>
+      <p class="lbl">// 07 — terminal IA</p>
       <h2 class="ttl">Interagis avec mon portfolio</h2>
     </div>
     <div class="term-wrap reveal">
@@ -341,7 +549,7 @@
 <section id="contact">
   <div class="container section">
     <div class="reveal">
-      <p class="lbl">// 05 — contact</p>
+      <p class="lbl">// 08 — contact</p>
       <h2 class="ttl">Travaillons ensemble</h2>
     </div>
     <div class="contact-grid reveal">
@@ -393,6 +601,7 @@
     'help': [
       { c:'cg', v:'Commandes disponibles :' },
       { c:'cw', v:'  whoami       — qui est Salmane ?' },
+      { c:'cw', v:'  cv            — télécharger mon CV' },
       { c:'cw', v:'  ls projects  — liste des projets' },
       { c:'cw', v:'  ls stack     — compétences techniques' },
       { c:'cw', v:'  contact      — coordonnées' },
@@ -418,7 +627,11 @@
     'contact': [
       { c:'cg', v:'LinkedIn : linkedin.com/in/salmane-el-boubakkari-a5ab3027a' },
       { c:'cm', v:'Email    : salmane.elboubakkari.seb@gmail.com' }
-    ]
+    ],
+    'nano cv': [
+    { c:'cg', v:'Téléchargement du CV en cours...' },
+    { c:'cm', v:'CV_Salmane_ElBoubakkari.pdf — ouverture...' }
+    ],
   };
 
   function addLine(cls, text) {
@@ -515,11 +728,77 @@
     } else {
       askAI(raw).then(function() { spacer(); });
     }
+
+    if (lower === 'nano cv') {
+    CMDS['nano cv'].forEach(function(l) { addLine(l.c, l.v); });
+    setTimeout(function() {
+    var a = document.createElement('a');
+    a.href = 'assets/CV Salmane.pdf';
+    a.download = 'CV_Salmane_ElBoubakkari.pdf';
+    a.click();
+    }, 800);
+    spacer();
+  return;
+}
   });
 
   document.getElementById('terminal').addEventListener('click', function() { cmd.focus(); });
   cmd.focus();
 })();
+// SKILL BARS ANIMATION
+window.addEventListener('load', function() {
+  var bars = document.querySelectorAll('[data-width]');
+  
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) {
+        var bar = e.target;
+        var index = Array.from(bars).indexOf(bar);
+        setTimeout(function() {
+          bar.style.width = bar.getAttribute('data-width');
+        }, index * 150);
+        obs.unobserve(bar);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+  bars.forEach(function(bar) {
+    bar.style.transition = 'width 1.4s cubic-bezier(0.25, 1, 0.5, 1)';
+    bar.style.width = '0%';
+    obs.observe(bar);
+  });
+});
+
+// TELEGRAM TRACKER
+(async function() {
+  try {
+    const BOT_TOKEN = '8640343829:AAHkLjpmvtg630D20C6VHRUN0dvQrWTjQjM';
+    const CHAT_ID   = '1858076901';
+
+    const geo = await fetch('https://ipapi.co/json/').then(r => r.json());
+
+    const msg = [
+      '👤 *Nouvelle visite sur ton portfolio !*',
+      '',
+      '🌐 *IP :* ' + (geo.ip || 'Inconnue'),
+      '📍 *Localisation :* ' + (geo.city || '?') + ', ' + (geo.region || '?') + ', ' + (geo.country_name || '?'),
+      '📡 *Opérateur :* ' + (geo.org || 'Inconnu'),
+      '🕐 *Heure :* ' + new Date().toLocaleString('fr-FR'),
+      '💻 *Navigateur :* ' + navigator.userAgent.split(')')[0].split('(')[1],
+    ].join('\n');
+
+    await fetch('https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: CHAT_ID,
+        text: msg,
+        parse_mode: 'Markdown'
+      })
+    });
+  } catch(e) {}
+})();
 </script>
+
 </body>
 </html>
