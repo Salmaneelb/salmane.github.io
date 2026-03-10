@@ -21,6 +21,24 @@
       --sans:     'Outfit', sans-serif;
     }
 
+  /* CURSEUR */
+  * { cursor: none !important; }
+  .cursor-dot {
+    width: 6px; height: 6px; background: #4d8ef0; border-radius: 50%;
+    position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease;
+  }
+  .cursor-ring {
+    width: 28px; height: 28px;
+    border: 1px solid rgba(77, 142, 240, 0.5); border-radius: 50%;
+    position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
+  }
+  .cursor-ring.hovered { width: 44px; height: 44px; opacity: 0.4; }
+
+    
 /* FOND DYNAMIQUE */
 body::after {
   content: '';
@@ -32,6 +50,37 @@ body::after {
     radial-gradient(ellipse 50% 40% at 80% 80%, rgba(99, 60, 220, 0.1) 0%, transparent 60%),
     #080d1a;
 }
+
+/* DARK / LIGHT TOGGLE */
+body.light-mode {
+  --bg:       #ffffff;
+  --bg2:      #f4f6f9;
+  --border:   rgba(99, 155, 255, 0.2);
+  --text:     #0f1923;
+  --muted:    #7a8a9e;
+  --green:    #1b3f6e;
+  --green-lt: rgba(27, 63, 110, 0.08);
+}
+body.light-mode::after {
+  background:
+    radial-gradient(ellipse 60% 50% at 20% 20%, rgba(77, 142, 240, 0.1) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 80%, rgba(99, 60, 220, 0.07) 0%, transparent 60%),
+    #f4f6f9;
+}
+body.light-mode .term-wrap { background: #0d0d0d !important; }
+
+.theme-toggle {
+  position: fixed; bottom: 32px; right: 32px; z-index: 200;
+  width: 48px; height: 48px; border-radius: 50%;
+  background: rgba(77, 142, 240, 0.15);
+  border: 1px solid rgba(77, 142, 240, 0.3);
+  backdrop-filter: blur(12px);
+  cursor: pointer; font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+}
+.theme-toggle:hover { transform: scale(1.1); background: rgba(77, 142, 240, 0.25); }
 
 @keyframes bgMove {
   0%   { background-position: 0% 50%; }
@@ -76,6 +125,36 @@ body::after {
     .nav-links a { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
     .nav-links a:hover { color: var(--text); }
 
+
+    #particles {
+    position: fixed; inset: 0; z-index: -1;
+    pointer-events: none;
+    }
+
+    .btn-cv {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em;
+      text-transform: uppercase; text-decoration: none;
+      padding: 13px 28px;
+      border: 1px solid rgba(77, 142, 240, 0.4);
+      color: #4d8ef0;
+      background: rgba(77, 142, 240, 0.08);
+      backdrop-filter: blur(8px);
+      position: relative; overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .btn-cv::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(77, 142, 240, 0.12);
+      transform: translateX(-100%);
+      transition: transform 0.4s ease;
+    }
+    .btn-cv:hover::before { transform: translateX(0); }
+    .btn-cv:hover { border-color: rgba(77, 142, 240, 0.8); color: #e8edf5; }
+    .btn-cv-icon { transition: transform 0.3s ease; }
+    .btn-cv:hover .btn-cv-icon { transform: translateY(3px); }
+    
     /* HERO */
     #hero {
       min-height: 100vh;
@@ -255,7 +334,10 @@ div[style*="background:var(--border)"] {
   </style>
 </head>
 <body>
-
+<canvas id="particles"></canvas>
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+  
 <!-- NAV -->
 <nav id="nav">
   <div class="nav-logo">SEB /</div>
@@ -279,7 +361,10 @@ div[style*="background:var(--border)"] {
       <a href="#terminal" class="btn-line">↓ Ouvrir le terminal</a>
     </div>
     <div style="margin-top:20px; opacity:0; animation: up 0.7s ease 0.8s forwards;">
-    <a href="CV Salmane.pdf" download class="btn-line">↓ Télécharger mon CV</a>
+    <a href="assets/CV Salmane.pdf" download class="btn-cv">
+    <span class="btn-cv-text">Télécharger mon CV</span>
+    <span class="btn-cv-icon">↓</span>
+    </a>
     </div>
   </div>
 </section>
@@ -606,6 +691,7 @@ div[style*="background:var(--border)"] {
       { c:'cw', v:'  ls stack     — compétences techniques' },
       { c:'cw', v:'  contact      — coordonnées' },
       { c:'cw', v:'  clear        — effacer le terminal' },
+      { c:'cm', v:'  ???           — explore le terminal...' },
       { c:'cm', v:'  <question>   — pose-moi n\'importe quoi !' }
     ],
     'whoami': [
@@ -631,6 +717,18 @@ div[style*="background:var(--border)"] {
     'nano cv': [
     { c:'cg', v:'Téléchargement du CV en cours...' },
     { c:'cm', v:'CV_Salmane_ElBoubakkari.pdf — ouverture...' }
+    ],
+
+    'sudo rm -rf /': [
+    { c:'ce', v:'ATTENTION : Suppression du système en cours...' },
+    { c:'ce', v:'[████████████████████] 100%' },
+    { c:'cg', v:'Joke. Tu croyais vraiment ? 😄' },
+    ],
+    'hack': [
+    { c:'cg', v:'Initialisation du protocole de hack...' },
+    { c:'cm', v:'Scan des ports... 22, 80, 443, 3306' },
+    { c:'cm', v:'Exploitation CVE-2024-1337...' },
+    { c:'cg', v:'Accès refusé. Nice try 😎' },
     ],
   };
 
@@ -733,7 +831,7 @@ div[style*="background:var(--border)"] {
     CMDS['nano cv'].forEach(function(l) { addLine(l.c, l.v); });
     setTimeout(function() {
     var a = document.createElement('a');
-    a.href = 'assets/CV Salmane.pdf';
+    a.href = 'CV Salmane.pdf';
     a.download = 'CV_Salmane_ElBoubakkari.pdf';
     a.click();
     }, 800);
@@ -797,8 +895,93 @@ window.addEventListener('load', function() {
       })
     });
   } catch(e) {}
+  // THEME TOGGLE
+  var themeBtn = document.getElementById('themeToggle');
+  var isLight = localStorage.getItem('theme') === 'light';
+  if (isLight) { document.body.classList.add('light-mode'); themeBtn.textContent = '☀️'; }
+  themeBtn.addEventListener('click', function() {
+    document.body.classList.toggle('light-mode');
+    var light = document.body.classList.contains('light-mode');
+    themeBtn.textContent = light ? '☀️' : '🌙';
+    localStorage.setItem('theme', light ? 'light' : 'dark');
+  });
+
+// CURSEUR
+var dot = document.getElementById('cursorDot');
+var ring = document.getElementById('cursorRing');
+var rx = 0, ry = 0;
+document.addEventListener('mousemove', function(e) {
+  dot.style.left = e.clientX + 'px';
+  dot.style.top  = e.clientY + 'px';
+  rx += (e.clientX - rx) * 0.1;
+  ry += (e.clientY - ry) * 0.1;
+  ring.style.left = rx + 'px';
+  ring.style.top  = ry + 'px';
+});
+document.querySelectorAll('a, button, .scard, .pcard, .clink, #cmd').forEach(function(el) {
+  el.addEventListener('mouseenter', function() { ring.classList.add('hovered'); });
+  el.addEventListener('mouseleave', function() { ring.classList.remove('hovered'); });
+});
+
+function animCursor() {
+  rx += (parseFloat(dot.style.left || 0) - rx) * 0.12;
+  ry += (parseFloat(dot.style.top  || 0) - ry) * 0.12;
+  ring.style.left = rx + 'px';
+  ring.style.top  = ry + 'px';
+  requestAnimationFrame(animCursor);
+}
+animCursor();
+
+// PARTICULES
+var canvas = document.getElementById('particles');
+var ctx = canvas.getContext('2d');
+var pts = [];
+function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+for (var i = 0; i < 60; i++) {
+  pts.push({
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight,
+    r: Math.random() * 1.5 + 0.3,
+    dx: (Math.random() - 0.5) * 0.4,
+    dy: (Math.random() - 0.5) * 0.4,
+    o: Math.random() * 0.4 + 0.1
+  });
+}
+function drawParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  pts.forEach(function(p) {
+    p.x += p.dx; p.y += p.dy;
+    if (p.x < 0 || p.x > canvas.width)  p.dx *= -1;
+    if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(77, 142, 240, ' + p.o + ')';
+    ctx.fill();
+  });
+  // lignes entre particules proches
+  for (var i = 0; i < pts.length; i++) {
+    for (var j = i + 1; j < pts.length; j++) {
+      var dx = pts[i].x - pts[j].x;
+      var dy = pts[i].y - pts[j].y;
+      var dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 120) {
+        ctx.beginPath();
+        ctx.moveTo(pts[i].x, pts[i].y);
+        ctx.lineTo(pts[j].x, pts[j].y);
+        ctx.strokeStyle = 'rgba(77, 142, 240, ' + (0.08 * (1 - dist/120)) + ')';
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
 })();
 </script>
-
+<button class="theme-toggle" id="themeToggle" title="Changer le thème">🌙</button>
 </body>
 </html>
