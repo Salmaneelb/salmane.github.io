@@ -294,11 +294,46 @@ div[style*="background:var(--border)"] {
 
     /* PROJECTS */
     .proj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
-    .pcard { padding: 36px; background: var(--bg2); border: 1px solid var(--border); transition: border-color 0.2s; }
-    .pcard:hover { border-color: var(--green); }
-    .pcard-num { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; color: var(--green); margin-bottom: 18px; }
-    .pcard-title { font-family: var(--serif); font-size: 20px; margin-bottom: 10px; }
-    .pcard-desc { font-size: 13px; color: var(--muted); line-height: 1.7; margin-bottom: 22px; }
+    .pcard {
+  padding: 36px; background: var(--bg2); border: 1px solid var(--border);
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  position: relative; overflow: hidden; cursor: pointer;
+  }
+  .pcard:hover {
+    border-color: rgba(77, 142, 240, 0.5) !important;
+    transform: scale(1.02);
+    z-index: 10;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  }
+  
+  /* Contenu court (visible par défaut) */
+  .pcard-short { transition: opacity 0.3s ease, transform 0.3s ease; }
+  .pcard:hover .pcard-short { opacity: 0; transform: translateY(-8px); pointer-events: none; }
+  
+  /* Contenu détaillé (caché par défaut) */
+  .pcard-detail {
+    position: absolute; inset: 0; padding: 36px;
+    opacity: 0; transform: translateY(12px);
+    transition: opacity 0.35s ease 0.1s, transform 0.35s ease 0.1s;
+    display: flex; flex-direction: column; justify-content: center; gap: 16px;
+    background: var(--bg2);
+  }
+  .pcard:hover .pcard-detail { opacity: 1; transform: translateY(0); }
+  
+  .pcard-detail-title {
+    font-family: var(--serif); font-size: 18px; color: var(--text);
+  }
+  .pcard-detail ul {
+    list-style: none; display: flex; flex-direction: column; gap: 8px;
+  }
+  .pcard-detail ul li {
+    font-family: var(--mono); font-size: 12px; color: var(--muted);
+    padding-left: 16px; position: relative; line-height: 1.6;
+  }
+  .pcard-detail ul li::before {
+    content: '▸'; position: absolute; left: 0; color: #4d8ef0;
+  }
+  .pcard-detail-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
     .tags { display: flex; flex-wrap: wrap; gap: 6px; }
     .tag { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 10px; border: 1px solid var(--border); color: var(--muted); background: var(--bg); }
 
@@ -552,29 +587,84 @@ div[style*="background:var(--border)"] {
     </div>
     <div class="proj-grid reveal">
       <div class="pcard">
-        <div class="pcard-num">01</div>
-        <h3 class="pcard-title">Déploiement Azure AD</h3>
-        <p class="pcard-desc">Mise en place d'un environnement Azure Active Directory avec gestion des identités, groupes et politiques d'accès conditionnel.</p>
-        <div class="tags"><span class="tag">Azure AD</span><span class="tag">IAM</span><span class="tag">SSO</span></div>
-      </div>
-      <div class="pcard">
-        <div class="pcard-num">02</div>
-        <h3 class="pcard-title">Gestion de parc Intune</h3>
-        <p class="pcard-desc">Administration d'un parc de postes via Microsoft Intune : profils, déploiement d'apps, conformité et gestion des appareils mobiles.</p>
-        <div class="tags"><span class="tag">Intune</span><span class="tag">MDM</span><span class="tag">Windows</span></div>
-      </div>
-      <div class="pcard">
-        <div class="pcard-num">03</div>
-        <h3 class="pcard-title">Infrastructure Proxmox</h3>
-        <p class="pcard-desc">Déploiement et administration d'un environnement de virtualisation Proxmox avec VMs, conteneurs LXC et réplication.</p>
-        <div class="tags"><span class="tag">Proxmox</span><span class="tag">VMs</span><span class="tag">LXC</span></div>
-      </div>
-      <div class="pcard">
-        <div class="pcard-num">04</div>
-        <h3 class="pcard-title">Monitoring Wazuh</h3>
-        <p class="pcard-desc">Déploiement d'un SIEM Wazuh pour la surveillance des événements de sécurité, détection d'intrusions et corrélation de logs.</p>
-        <div class="tags"><span class="tag">Wazuh</span><span class="tag">SIEM</span><span class="tag">Sécurité</span></div>
-      </div>
+  <div class="pcard-short">
+    <div class="pcard-num">01</div>
+    <h3 class="pcard-title">Déploiement Azure AD</h3>
+    <p class="pcard-desc">Mise en place d'un environnement Azure Active Directory avec gestion des identités, groupes et politiques d'accès conditionnel.</p>
+    <div class="tags"><span class="tag">Azure AD</span><span class="tag">IAM</span><span class="tag">SSO</span></div>
+  </div>
+  <div class="pcard-detail">
+    <div style="font-family:var(--mono);font-size:10px;letter-spacing:0.15em;color:#4d8ef0;">01 — DÉTAILS</div>
+    <div class="pcard-detail-title">Déploiement Azure AD</div>
+    <ul>
+      <li>Création et gestion des utilisateurs, groupes et unités organisationnelles</li>
+      <li>Configuration des politiques d'accès conditionnel et MFA</li>
+      <li>Mise en place du SSO pour les applications métiers</li>
+      <li>Synchronisation avec Active Directory on-premise via AD Connect</li>
+    </ul>
+    <div class="pcard-detail-tags"><span class="tag">Azure AD</span><span class="tag">IAM</span><span class="tag">SSO</span><span class="tag">MFA</span></div>
+  </div>
+</div>
+
+<div class="pcard">
+  <div class="pcard-short">
+    <div class="pcard-num">02</div>
+    <h3 class="pcard-title">Gestion de parc Intune</h3>
+    <p class="pcard-desc">Administration d'un parc de postes via Microsoft Intune : profils, déploiement d'apps, conformité et gestion des appareils mobiles.</p>
+    <div class="tags"><span class="tag">Intune</span><span class="tag">MDM</span><span class="tag">Windows</span></div>
+  </div>
+  <div class="pcard-detail">
+    <div style="font-family:var(--mono);font-size:10px;letter-spacing:0.15em;color:#4d8ef0;">02 — DÉTAILS</div>
+    <div class="pcard-detail-title">Gestion de parc Intune</div>
+    <ul>
+      <li>Déploiement automatisé de postes Windows via Autopilot</li>
+      <li>Création de profils de configuration et politiques de conformité</li>
+      <li>Déploiement silencieux d'applications métiers</li>
+      <li>Gestion des appareils mobiles iOS et Android</li>
+    </ul>
+    <div class="pcard-detail-tags"><span class="tag">Intune</span><span class="tag">MDM</span><span class="tag">Autopilot</span><span class="tag">Windows</span></div>
+  </div>
+</div>
+
+<div class="pcard">
+  <div class="pcard-short">
+    <div class="pcard-num">03</div>
+    <h3 class="pcard-title">Infrastructure Proxmox</h3>
+    <p class="pcard-desc">Déploiement et administration d'un environnement de virtualisation Proxmox avec VMs, conteneurs LXC et réplication.</p>
+    <div class="tags"><span class="tag">Proxmox</span><span class="tag">VMs</span><span class="tag">LXC</span></div>
+  </div>
+  <div class="pcard-detail">
+    <div style="font-family:var(--mono);font-size:10px;letter-spacing:0.15em;color:#4d8ef0;">03 — DÉTAILS</div>
+    <div class="pcard-detail-title">Infrastructure Proxmox</div>
+    <ul>
+      <li>Installation et configuration d'un nœud Proxmox VE</li>
+      <li>Création et gestion de VMs Windows Server et Linux</li>
+      <li>Déploiement de conteneurs LXC pour services légers</li>
+      <li>Configuration de la réplication et des snapshots automatiques</li>
+    </ul>
+    <div class="pcard-detail-tags"><span class="tag">Proxmox</span><span class="tag">VMs</span><span class="tag">LXC</span><span class="tag">Linux</span></div>
+  </div>
+</div>
+
+<div class="pcard">
+  <div class="pcard-short">
+    <div class="pcard-num">04</div>
+    <h3 class="pcard-title">Monitoring Wazuh</h3>
+    <p class="pcard-desc">Déploiement d'un SIEM Wazuh pour la surveillance des événements de sécurité, détection d'intrusions et corrélation de logs.</p>
+    <div class="tags"><span class="tag">Wazuh</span><span class="tag">SIEM</span><span class="tag">Sécurité</span></div>
+  </div>
+  <div class="pcard-detail">
+    <div style="font-family:var(--mono);font-size:10px;letter-spacing:0.15em;color:#4d8ef0;">04 — DÉTAILS</div>
+    <div class="pcard-detail-title">Monitoring Wazuh</div>
+    <ul>
+      <li>Déploiement du serveur Wazuh et agents sur les endpoints</li>
+      <li>Configuration des règles de détection d'intrusion (IDS)</li>
+      <li>Mise en place de la corrélation de logs multi-sources</li>
+      <li>Création de tableaux de bord et alertes en temps réel</li>
+    </ul>
+    <div class="pcard-detail-tags"><span class="tag">Wazuh</span><span class="tag">SIEM</span><span class="tag">IDS</span><span class="tag">Logs</span></div>
+  </div>
+</div>
     </div>
   </div>
 </section>
